@@ -57,11 +57,11 @@ using storage_traits_t = gridtools::storage_traits<backend_t::backend_id_t>;
  */
 using meta_data_ijk_t = storage_traits_t::select_storage_info_align<0, 3, halo_ij_t, alignment<1>>::type;
 using meta_data_ij_t =
-    storage_traits_t::select_special_storage_info_align<1, gridtools::selector<1, 1, 0>, halo_ij_t, alignment<1>>;
+    storage_traits_t::select_special_storage_info_align<1, gridtools::selector<1, 1, 0>, halo_ij_t, alignment<1>>::type;
 using meta_data_i_t =
-    storage_traits_t::select_special_storage_info_align<2, gridtools::selector<1, 0, 0>, halo_i_t, alignment<1>>;
+    storage_traits_t::select_special_storage_info_align<2, gridtools::selector<1, 0, 0>, halo_i_t, alignment<1>>::type;
 using meta_data_j_t =
-    storage_traits_t::select_special_storage_info_align<3, gridtools::selector<0, 1, 0>, halo_j_t, alignment<1>>;
+    storage_traits_t::select_special_storage_info_align<3, gridtools::selector<0, 1, 0>, halo_j_t, alignment<1>>::type;
 using meta_data_k_t = storage_traits_t::special_storage_info_t<4, gridtools::selector<0, 0, 1>>;
 using meta_data_scalar_t =
     storage_traits_t::special_storage_info_t<5, gridtools::selector<0, 0, 0>>;
