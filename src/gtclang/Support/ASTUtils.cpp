@@ -13,11 +13,16 @@
 //  See LICENSE.txt for details.
 //
 //===------------------------------------------------------------------------------------------===//
-#include "test/integration-test/CodeGen/Options.hpp"
 
-namespace dawn {
-Options& Options::getInstance() {
-  static Options instance;
-  return instance;
+#include "clang/AST/ASTFwd.h"
+#include "clang/AST/ExprCXX.h"
+
+#include "gtclang/Support/ASTUtils.h"
+
+namespace gtclang {
+
+std::string getClassNameFromConstructExpr(clang::CXXConstructExpr* expr) {
+  clang::CXXRecordDecl* recDecl = expr->getConstructor()->getParent();
+  return recDecl->getNameAsString();
 }
 }
