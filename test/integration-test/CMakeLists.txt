@@ -43,6 +43,11 @@ function(code_generate_examples)
         set(config_str "--config=${cwd}/CodeGen/${example}.json")
       endif()
   
+      if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+        set(config_str "${config_str}" "-fpass-verbose")
+      endif(CMAKE_BUILD_TYPE MATCHES DEBUG)
+
+
       # Add the specified compilerflags
       GET_COMPILER_FLAGS(${example} flags)
       set(config_str "${config_str}" "${flags}")
@@ -163,6 +168,7 @@ set(directories
   ${cwd}/PassSetNonTempCaches
   ${cwd}/PassSetBoundaryCondition
   ${cwd}/SIR
+  ${cwd}/IIRSerializer
 )
 
 list(APPEND compiler_flags -std=c++11 -O2)
@@ -188,10 +194,10 @@ yoda_add_custom_dummy_target(NAME GTClangQtCreatorParseProjectCodeGenTest
 
 # Codegen tests require GridTools
 if(GTCLANG_HAS_GRIDTOOLS)
-  set(codegen_examples copy_stencil conditional_stencil coriolis_stencil hori_diff_stencil_01 hori_diff_stencil_02
+  set(codegen_examples copy_stencil lap conditional_stencil coriolis_stencil hori_diff_stencil_01 hori_diff_stencil_02
       hori_diff_type2_stencil hd_smagorinsky intervals_stencil globals_stencil stencil_functions
       nested_stencil_functions stencil_desc_ast boundary_condition boundary_condition_2 tridiagonal_solve
-      kparallel_solver)
+      kparallel_solver asymmetric)
   # specific examples for cuda backend
   set(cuda_codegen_examples intervals01 intervals02 intervals03 local_kcache kcache_fill kcache_fill_kparallel
       kcache_fill_backward kcache_flush kcache_epflush)
@@ -206,6 +212,8 @@ if(GTCLANG_HAS_GRIDTOOLS)
 
   ADD_COMPILER_FLAG_TO_EXAMPLE("intervals02" "-disable-kcaches")
   ADD_COMPILER_FLAG_TO_EXAMPLE("intervals03" "-disable-kcaches")
+
+  ADD_COMPILER_FLAG_TO_EXAMPLE("lap" "-fpass-tmp-to-function")
 
   set(include_dirs)
   list(APPEND include_dirs "${CMAKE_SOURCE_DIR}/src")
