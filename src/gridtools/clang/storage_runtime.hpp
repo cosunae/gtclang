@@ -23,8 +23,10 @@
 #define GRIDTOOLS_CLANG_META_DATA_T_DEFINED
 #define GRIDTOOLS_CLANG_STORAGE_T_DEFINED
 
-#include <gridtools/common/defs.hpp>
-#include <gridtools/tools/backend_select.hpp>
+#include <gridtools/storage/storage_facility.hpp>
+#include <gridtools/stencil_composition/stencil_composition.hpp>
+#include <gridtools/stencil_composition/stencil_functions.hpp>
+
 namespace gridtools {
 
 namespace clang {
@@ -36,11 +38,12 @@ namespace clang {
  */
 
 #ifdef GRIDTOOLS_CLANG_HALO_EXTEND
-using halo_t = gridtools::halo<GRIDTOOLS_CLANG_HALO_EXTEND, GRIDTOOLS_CLANG_HALO_EXTEND, 0>;
-using halo_ij_t = gridtools::halo<GRIDTOOLS_CLANG_HALO_EXTEND, GRIDTOOLS_CLANG_HALO_EXTEND, 0>;
-using halo_i_t = gridtools::halo<GRIDTOOLS_CLANG_HALO_EXTEND, 0, 0>;
-using halo_j_t = gridtools::halo<0, GRIDTOOLS_CLANG_HALO_EXTEND, 0>;
+using halo_ijk_t = gridtools::halo<halo::value, halo::value, 0>;
+using halo_ij_t = gridtools::halo<halo::value, halo::value, 0>;
+using halo_i_t = gridtools::halo<halo::value, 0, 0>;
+using halo_j_t = gridtools::halo<0, halo::value, 0>;
 #else
+using halo_ijk_t = gridtools::halo<0, 0, 0>;
 using halo_ij_t = gridtools::halo<0, 0, 0>;
 using halo_i_t = gridtools::halo<0, 0, 0>;
 using halo_j_t = gridtools::halo<0, 0, 0>;
@@ -49,8 +52,13 @@ using halo_j_t = gridtools::halo<0, 0, 0>;
 /**
   * @brief Backend type
   */
-using storage_traits_t = gridtools::storage_traits<backend_t::backend_id_t>;
+#ifdef __CUDACC__
+using backend_t = gridtools::backend::cuda;
+#else
+using backend_t = gridtools::backend::mc;
+#endif
 
+using storage_traits_t = gridtools::storage_traits<backend_t>;
 /**
  * @brief Meta-data types
  * @{
